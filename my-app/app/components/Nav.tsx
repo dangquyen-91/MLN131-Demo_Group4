@@ -4,9 +4,12 @@ import { useEffect, useState } from "react";
 
 const links = [
   { href: "#hero", label: "Trang chủ" },
-  { href: "#nen-tang", label: "Nền tảng" },
-  { href: "#noi-dung", label: "Nội dung chương" },
-  { href: "#timeline", label: "Dòng thời gian" },
+  { href: "#khai-niem", label: "Khái niệm" },
+  { href: "#co-cau", label: "Cơ cấu xã hội" },
+  { href: "#bien-doi", label: "Biến đổi" },
+  { href: "#lien-minh", label: "Liên minh" },
+  { href: "#viet-nam", label: "Việt Nam" },
+  { href: "#quiz", label: "Quiz" },
 ];
 
 export default function Nav() {

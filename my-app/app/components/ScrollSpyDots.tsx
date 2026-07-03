@@ -4,9 +4,12 @@ import { useEffect, useState } from "react";
 
 const sections = [
   { id: "hero", label: "Trang chủ" },
-  { id: "nen-tang", label: "Nền tảng" },
-  { id: "noi-dung", label: "Nội dung chương" },
-  { id: "timeline", label: "Dòng thời gian" },
+  { id: "khai-niem", label: "Khái niệm" },
+  { id: "co-cau", label: "Cơ cấu xã hội" },
+  { id: "bien-doi", label: "Biến đổi" },
+  { id: "lien-minh", label: "Liên minh" },
+  { id: "viet-nam", label: "Việt Nam" },
+  { id: "quiz", label: "Quiz" },
 ];
 
 export default function ScrollSpyDots() {
