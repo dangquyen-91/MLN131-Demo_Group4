@@ -2,11 +2,19 @@ export type Block =
   | { type: "p"; text: string }
   | { type: "ul"; items: string[] }
   | { type: "example"; text: string }
-  | { type: "summary"; title: string; items: string[] };
+  | { type: "summary"; title: string; items: string[] }
+  | { type: "roleCards"; items: { label: string; color: string; text: string }[] };
 
 export interface Subsection {
   heading: string;
   blocks: Block[];
+}
+
+export interface RecapQuiz {
+  question: string;
+  options: string[];
+  correctIndex: number;
+  explanation: string;
 }
 
 export interface ChapterSection {
@@ -15,6 +23,7 @@ export interface ChapterSection {
   title: string;
   intro?: Block[];
   subsections: Subsection[];
+  recap: RecapQuiz;
 }
 
 export const chapterSections: ChapterSection[] = [
@@ -80,6 +89,18 @@ export const chapterSections: ChapterSection[] = [
         ],
       },
     ],
+    recap: {
+      question: "Quy luật nào KHÔNG thuộc ba quy luật biến đổi của cơ cấu xã hội - giai cấp trong thời kỳ quá độ?",
+      options: [
+        "Biến đổi gắn liền với cơ cấu kinh tế",
+        "Biến đổi ngày càng đa dạng, phức tạp",
+        "Biến đổi vừa đấu tranh, vừa liên minh và xích lại gần nhau",
+        "Biến đổi độc lập, không chịu tác động của kinh tế",
+      ],
+      correctIndex: 3,
+      explanation:
+        "Ba quy luật biến đổi đều gắn chặt với cơ cấu kinh tế, tính đa dạng và xu hướng vừa đấu tranh vừa liên minh — không có quy luật nào tách rời khỏi cơ cấu kinh tế.",
+    },
   },
   {
     id: "phan-2",
@@ -149,11 +170,23 @@ export const chapterSections: ChapterSection[] = [
         heading: "Vai trò của các lực lượng trong khối liên minh",
         blocks: [
           {
-            type: "ul",
+            type: "roleCards",
             items: [
-              "Giai cấp công nhân: giữ vai trò lãnh đạo; là lực lượng tiên phong trong công nghiệp hóa, hiện đại hóa; thông qua Đảng Cộng sản lãnh đạo toàn bộ khối liên minh.",
-              "Giai cấp nông dân: là lực lượng sản xuất quan trọng; là đồng minh tự nhiên của giai cấp công nhân; góp phần bảo đảm phát triển nông nghiệp và ổn định xã hội.",
-              "Đội ngũ trí thức: là lực lượng sáng tạo tri thức, khoa học và công nghệ; có vai trò quan trọng trong đổi mới sáng tạo và phát triển kinh tế tri thức; góp phần nâng cao năng suất lao động và chất lượng phát triển.",
+              {
+                label: "Giai cấp công nhân",
+                color: "#dc2626",
+                text: "Giữ vai trò lãnh đạo; là lực lượng tiên phong trong công nghiệp hóa, hiện đại hóa; thông qua Đảng Cộng sản lãnh đạo toàn bộ khối liên minh.",
+              },
+              {
+                label: "Giai cấp nông dân",
+                color: "#16a34a",
+                text: "Là lực lượng sản xuất quan trọng; là đồng minh tự nhiên của giai cấp công nhân; góp phần bảo đảm phát triển nông nghiệp và ổn định xã hội.",
+              },
+              {
+                label: "Đội ngũ trí thức",
+                color: "#2563eb",
+                text: "Là lực lượng sáng tạo tri thức, khoa học và công nghệ; có vai trò quan trọng trong đổi mới sáng tạo và phát triển kinh tế tri thức; góp phần nâng cao năng suất lao động và chất lượng phát triển.",
+              },
             ],
           },
           {
@@ -163,6 +196,18 @@ export const chapterSections: ChapterSection[] = [
         ],
       },
     ],
+    recap: {
+      question: "Trong nội dung liên minh giai cấp, yếu tố nào giữ vai trò nền tảng chính trị - xã hội?",
+      options: [
+        "Liên minh giữa doanh nhân và trí thức",
+        "Liên minh giữa giai cấp công nhân, giai cấp nông dân và đội ngũ trí thức",
+        "Liên minh giữa các tôn giáo",
+        "Sự cạnh tranh giữa các thành phần kinh tế",
+      ],
+      correctIndex: 1,
+      explanation:
+        "Liên minh công nhân - nông dân - trí thức là nền tảng chính trị - xã hội của Nhà nước xã hội chủ nghĩa, là cơ sở bảo đảm thắng lợi sự nghiệp xây dựng chủ nghĩa xã hội.",
+    },
   },
   {
     id: "phan-3",
@@ -178,13 +223,33 @@ export const chapterSections: ChapterSection[] = [
             text: "Cơ cấu này đang biến đổi phức tạp, đa dạng, bao gồm các lực lượng cơ bản:",
           },
           {
-            type: "ul",
+            type: "roleCards",
             items: [
-              "Giai cấp công nhân: là giai cấp lãnh đạo cách mạng thông qua đội tiên phong là Đảng Cộng sản Việt Nam; cùng với giai cấp nông dân và đội ngũ trí thức tạo thành nền tảng chính trị - xã hội vững chắc của Nhà nước.",
-              "Giai cấp nông dân: cùng với nông nghiệp, nông thôn có vị trí chiến lược trong sự nghiệp công nghiệp hóa, hiện đại hóa nông nghiệp, nông thôn. Hiện nay đang có xu hướng giảm dần về số lượng và tỷ lệ do tác động của đô thị hóa.",
-              "Đội ngũ trí thức: là lực lượng lao động sáng tạo đặc biệt quan trọng trong tiến trình đẩy mạnh công nghiệp hóa, hiện đại hóa và hội nhập quốc tế.",
-              "Đội ngũ doanh nhân: đang phát triển nhanh, đóng góp tích cực vào giải quyết việc làm, tăng trưởng kinh tế, xóa đói giảm nghèo.",
-              "Các lực lượng khác: thanh niên, phụ nữ, cựu chiến binh, đồng bào các dân tộc và đồng bào có tôn giáo đều có vị trí, vai trò xác định, cùng tạo nên khối đại đoàn kết toàn dân tộc.",
+              {
+                label: "Giai cấp công nhân",
+                color: "#dc2626",
+                text: "Là giai cấp lãnh đạo cách mạng thông qua đội tiên phong là Đảng Cộng sản Việt Nam; cùng với giai cấp nông dân và đội ngũ trí thức tạo thành nền tảng chính trị - xã hội vững chắc của Nhà nước.",
+              },
+              {
+                label: "Giai cấp nông dân",
+                color: "#16a34a",
+                text: "Cùng với nông nghiệp, nông thôn có vị trí chiến lược trong công nghiệp hóa, hiện đại hóa nông nghiệp, nông thôn. Hiện có xu hướng giảm dần về số lượng, tỷ lệ do đô thị hóa.",
+              },
+              {
+                label: "Đội ngũ trí thức",
+                color: "#2563eb",
+                text: "Là lực lượng lao động sáng tạo đặc biệt quan trọng trong tiến trình đẩy mạnh công nghiệp hóa, hiện đại hóa và hội nhập quốc tế.",
+              },
+              {
+                label: "Đội ngũ doanh nhân",
+                color: "#d97706",
+                text: "Đang phát triển nhanh, đóng góp tích cực vào giải quyết việc làm, tăng trưởng kinh tế, xóa đói giảm nghèo.",
+              },
+              {
+                label: "Các lực lượng khác",
+                color: "#78716c",
+                text: "Thanh niên, phụ nữ, cựu chiến binh, đồng bào các dân tộc và đồng bào có tôn giáo đều có vị trí, vai trò xác định, cùng tạo nên khối đại đoàn kết toàn dân tộc.",
+              },
             ],
           },
           {
@@ -219,6 +284,13 @@ export const chapterSections: ChapterSection[] = [
         ],
       },
     ],
+    recap: {
+      question: "Trong 3 nội dung liên minh giai cấp ở Việt Nam, nội dung nào giữ vai trò cơ bản, quyết định nhất?",
+      options: ["Nội dung văn hóa - xã hội", "Nội dung chính trị", "Nội dung kinh tế", "Cả ba có vai trò ngang nhau"],
+      correctIndex: 2,
+      explanation:
+        "Nội dung kinh tế là nội dung cơ bản, quyết định nhất — nhằm thỏa mãn lợi ích kinh tế thiết thân và đẩy mạnh hợp tác công nghiệp - nông nghiệp - khoa học công nghệ; nội dung chính trị và văn hóa - xã hội tạo điều kiện bảo đảm cho liên minh bền vững.",
+    },
   },
 ];
 

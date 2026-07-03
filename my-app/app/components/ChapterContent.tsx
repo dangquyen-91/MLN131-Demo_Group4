@@ -1,4 +1,8 @@
+"use client";
+
+import { useState } from "react";
 import { Block, chapterConclusion, chapterSections } from "@/app/lib/chapterContent";
+import Quiz from "./Quiz";
 
 function BlockView({ block }: { block: Block }) {
   switch (block.type) {
@@ -37,47 +41,101 @@ function BlockView({ block }: { block: Block }) {
           <p className="text-sm leading-relaxed text-stone-700">{block.text}</p>
         </div>
       );
+    case "roleCards":
+      return (
+        <div className="grid gap-3 sm:grid-cols-2">
+          {block.items.map((r) => (
+            <div
+              key={r.label}
+              className="rounded-lg border p-4"
+              style={{ borderColor: `${r.color}40`, backgroundColor: `${r.color}0d` }}
+            >
+              <p className="mb-1 text-sm font-bold" style={{ color: r.color }}>
+                {r.label}
+              </p>
+              <p className="text-sm leading-relaxed text-stone-700">{r.text}</p>
+            </div>
+          ))}
+        </div>
+      );
   }
+}
+
+function ChapterSectionCard({ section }: { section: (typeof chapterSections)[number] }) {
+  const [opened, setOpened] = useState<Record<number, boolean>>({ 0: true });
+  const readCount = Object.values(opened).filter(Boolean).length;
+  const total = section.subsections.length;
+
+  return (
+    <div className="overflow-hidden rounded-xl border border-stone-200 bg-white">
+      <div className="border-b border-stone-100 border-l-4 border-l-brand-red p-5">
+        <p className="text-xs font-bold uppercase tracking-widest text-brand-red">
+          Phần {section.roman}
+        </p>
+        <h3 className="mt-1 text-lg font-bold text-stone-900">{section.title}</h3>
+        {section.intro?.map((block, i) => (
+          <div key={i} className="mt-3 border-l-2 border-brand-gold pl-3 italic">
+            <BlockView block={block} />
+          </div>
+        ))}
+        <div className="mt-4 flex items-center gap-3 text-xs text-stone-500">
+          <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-stone-200">
+            <div
+              className="h-full bg-brand-red transition-all"
+              style={{ width: `${total ? (readCount / total) * 100 : 0}%` }}
+            />
+          </div>
+          <span>
+            Đã xem {readCount}/{total} mục
+          </span>
+        </div>
+      </div>
+
+      <div className="divide-y divide-stone-100">
+        {section.subsections.map((sub, i) => (
+          <details
+            key={i}
+            className="group p-5 open:bg-stone-50/60"
+            open={i === 0}
+            onToggle={(e) =>
+              setOpened((prev) => ({ ...prev, [i]: (e.target as HTMLDetailsElement).open }))
+            }
+          >
+            <summary className="flex cursor-pointer list-none items-center gap-2 font-semibold text-stone-800 marker:content-none">
+              <span className="inline-block text-brand-red transition-transform group-open:rotate-90">
+                ▸
+              </span>
+              <span className="flex-1">{sub.heading}</span>
+              {opened[i] && (
+                <span className="text-xs font-bold text-brand-red" title="Đã xem">
+                  ✓
+                </span>
+              )}
+            </summary>
+            <div className="mt-4 flex flex-col gap-4 pl-5">
+              {sub.blocks.map((block, j) => (
+                <BlockView key={j} block={block} />
+              ))}
+            </div>
+          </details>
+        ))}
+      </div>
+
+      <div className="border-t border-stone-100 bg-stone-50/60 p-5">
+        <p className="mb-3 text-xs font-bold uppercase tracking-widest text-brand-red">
+          Kiểm tra nhanh — Phần {section.roman}
+        </p>
+        <Quiz quiz={section.recap} />
+      </div>
+    </div>
+  );
 }
 
 export default function ChapterContent() {
   return (
     <div className="flex flex-col gap-8">
       {chapterSections.map((section) => (
-        <div
-          key={section.id}
-          className="overflow-hidden rounded-xl border border-stone-200 bg-white"
-        >
-          <div className="border-b border-stone-100 border-l-4 border-l-brand-red p-5">
-            <p className="text-xs font-bold uppercase tracking-widest text-brand-red">
-              Phần {section.roman}
-            </p>
-            <h3 className="mt-1 text-lg font-bold text-stone-900">{section.title}</h3>
-            {section.intro?.map((block, i) => (
-              <div key={i} className="mt-3 border-l-2 border-brand-gold pl-3 italic">
-                <BlockView block={block} />
-              </div>
-            ))}
-          </div>
-
-          <div className="divide-y divide-stone-100">
-            {section.subsections.map((sub, i) => (
-              <details key={i} className="group p-5 open:bg-stone-50/60" open={i === 0}>
-                <summary className="cursor-pointer list-none font-semibold text-stone-800 marker:content-none">
-                  <span className="mr-2 inline-block text-brand-red transition-transform group-open:rotate-90">
-                    ▸
-                  </span>
-                  {sub.heading}
-                </summary>
-                <div className="mt-4 flex flex-col gap-4 pl-5">
-                  {sub.blocks.map((block, j) => (
-                    <BlockView key={j} block={block} />
-                  ))}
-                </div>
-              </details>
-            ))}
-          </div>
-        </div>
+        <ChapterSectionCard key={section.id} section={section} />
       ))}
 
       <div className="rounded-xl border border-brand-red-dark bg-brand-red-dark p-6 text-white">
