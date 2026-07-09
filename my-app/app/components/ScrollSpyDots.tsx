@@ -9,6 +9,7 @@ const sections = [
   { id: "bien-doi", label: "Biến đổi" },
   { id: "lien-minh", label: "Liên minh" },
   { id: "viet-nam", label: "Việt Nam" },
+  { id: "tro-choi", label: "Trò chơi" },
   { id: "quiz", label: "Quiz" },
 ];
 

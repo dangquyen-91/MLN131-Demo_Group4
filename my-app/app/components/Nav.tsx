@@ -9,6 +9,7 @@ const links = [
   { href: "#bien-doi", label: "Biến đổi" },
   { href: "#lien-minh", label: "Liên minh" },
   { href: "#viet-nam", label: "Việt Nam" },
+  { href: "#tro-choi", label: "Trò chơi" },
   { href: "#quiz", label: "Quiz" },
 ];
 
@@ -51,7 +52,7 @@ export default function Nav() {
           ))}
         </ul>
         <a
-          href="#noi-dung"
+          href="#khai-niem"
           className="rounded-full bg-brand-gold px-4 py-2 text-xs font-bold uppercase tracking-wide text-brand-red-dark transition-transform hover:scale-105"
         >
           Khám phá
