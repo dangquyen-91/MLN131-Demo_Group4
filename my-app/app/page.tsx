@@ -7,7 +7,7 @@ import StructureScene from "@/app/components/scenes/StructureScene";
 import ChangeScene from "@/app/components/scenes/ChangeScene";
 import AllianceScene from "@/app/components/scenes/AllianceScene";
 import VietnamScene from "@/app/components/scenes/VietnamScene";
-import TerritoryBattleScene from "@/app/components/scenes/TerritoryBattleScene";
+import GamePromoScene from "@/app/components/scenes/GamePromoScene";
 import QuizScene from "@/app/components/scenes/QuizScene";
 
 export default function Home() {
@@ -28,7 +28,7 @@ export default function Home() {
 
       <AllianceScene />
       <VietnamScene />
-      <TerritoryBattleScene />
+      <GamePromoScene />
       <QuizScene />
 
       <footer className="bg-brand-red-dark px-6 py-10 text-center text-sm text-white/50">
