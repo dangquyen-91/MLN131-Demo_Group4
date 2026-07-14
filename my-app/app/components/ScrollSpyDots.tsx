@@ -11,6 +11,7 @@ const sections = [
   { id: "viet-nam", label: "Việt Nam" },
   { id: "tro-choi", label: "Trò chơi" },
   { id: "quiz", label: "Quiz" },
+  { id: "ai-nguon", label: "AI & Nguồn" },
 ];
 
 export default function ScrollSpyDots() {

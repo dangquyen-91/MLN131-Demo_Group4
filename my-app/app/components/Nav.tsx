@@ -11,6 +11,7 @@ const links = [
   { href: "#viet-nam", label: "Việt Nam" },
   { href: "#tro-choi", label: "Trò chơi" },
   { href: "#quiz", label: "Quiz" },
+  { href: "#ai-nguon", label: "AI & Nguồn" },
 ];
 
 export default function Nav() {

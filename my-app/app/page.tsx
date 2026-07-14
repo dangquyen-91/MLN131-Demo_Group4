@@ -9,6 +9,7 @@ import AllianceScene from "@/app/components/scenes/AllianceScene";
 import VietnamScene from "@/app/components/scenes/VietnamScene";
 import TerritoryBattleScene from "@/app/components/scenes/TerritoryBattleScene";
 import QuizScene from "@/app/components/scenes/QuizScene";
+import AiUsageScene from "@/app/components/scenes/AiUsageScene";
 
 export default function Home() {
   return (
@@ -30,6 +31,7 @@ export default function Home() {
       <VietnamScene />
       <TerritoryBattleScene />
       <QuizScene />
+      <AiUsageScene />
 
       <footer className="bg-brand-red-dark px-6 py-10 text-center text-sm text-white/50">
         Sản phẩm học tập môn Chủ nghĩa xã hội khoa học — nội dung được xây dựng dựa
