@@ -1,16 +1,37 @@
 "use client";
 
 import { useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import { TimelineEvent } from "@/app/lib/content";
 
 export default function Quiz({ quiz }: { quiz: TimelineEvent["quiz"] }) {
   const [selected, setSelected] = useState<number | null>(null);
+  const isCorrectAnswer = selected === quiz.correctIndex;
 
   return (
     <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
       <p className="mb-3 text-sm font-semibold text-amber-900">
         Câu hỏi nhanh: {quiz.question}
       </p>
+
+      <AnimatePresence>
+        {selected !== null && (
+          <motion.div
+            initial={{ opacity: 0, y: -8, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+            role="status"
+            className={`mb-3 flex items-center gap-2 rounded-md px-3 py-2 text-sm font-bold ${
+              isCorrectAnswer ? "bg-green-500 text-white" : "bg-red-500 text-white"
+            }`}
+          >
+            <span aria-hidden>{isCorrectAnswer ? "✓" : "✗"}</span>
+            {isCorrectAnswer ? "Chính xác!" : "Chưa đúng — xem giải thích bên dưới"}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div className="flex flex-col gap-2">
         {quiz.options.map((option, i) => {
           const isCorrect = i === quiz.correctIndex;

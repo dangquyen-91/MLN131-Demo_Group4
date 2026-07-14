@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 
 type TeamId = "team1" | "team2" | "team3" | "team4";
 
@@ -419,6 +419,7 @@ export default function TerritoryBattleScene() {
   const [gameStarted, setGameStarted] = useState(false);
   const [history, setHistory] = useState<Snapshot[]>([]);
   const [selectedChoice, setSelectedChoice] = useState<string | null>(null);
+  const [pendingCorrect, setPendingCorrect] = useState<boolean | null>(null);
 
   const currentTeam = TEAMS[activeTeam];
   const currentQuestion = QUESTIONS[questionIndex];
@@ -499,17 +500,26 @@ export default function TerritoryBattleScene() {
   }
 
   function chooseOption(choice: string) {
-    if (finished) return;
+    if (finished || selectedChoice !== null) return;
     saveSnapshot();
     setSelectedChoice(choice);
-    const correct = correctChoice(currentQuestion);
-    if (choice === correct) {
-      grantLetters(`${teamName(currentTeam)} chọn ${choice} chính xác.`);
-      return;
+    setPendingCorrect(choice === correctChoice(currentQuestion));
+  }
+
+  function advanceAfterChoice() {
+    if (selectedChoice === null) return;
+    saveSnapshot();
+    if (pendingCorrect) {
+      grantLetters(`${teamName(currentTeam)} chọn ${selectedChoice} chính xác.`);
+    } else {
+      const correctAnswer = correctChoice(currentQuestion);
+      setQuestionIndex(nextIndex(questionIndex));
+      setSelectedChoice(null);
+      setMessage(
+        `${teamName(currentTeam)} chọn ${selectedChoice} chưa đúng. Đáp án đúng: ${correctAnswer}. Admin chọn nhóm tiếp theo.`
+      );
     }
-    setQuestionIndex(nextIndex(questionIndex));
-    setSelectedChoice(null);
-    setMessage(`${teamName(currentTeam)} chọn ${choice} chưa đúng. Đáp án đúng: ${correct}. Admin chọn nhóm tiếp theo.`);
+    setPendingCorrect(null);
   }
 
   function missQuestion() {
@@ -573,6 +583,7 @@ export default function TerritoryBattleScene() {
     setFinished(false);
     setGameStarted(false);
     setSelectedChoice(null);
+    setPendingCorrect(null);
   }
 
   function undo() {
@@ -700,7 +711,7 @@ export default function TerritoryBattleScene() {
                       <button
                         key={team.id}
                         onClick={() => setActiveTeam(index)}
-                        disabled={finished}
+                        disabled={finished || selectedChoice !== null}
                         className="rounded-lg border p-3 text-left shadow-sm transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:hover:translate-y-0"
                         style={{
                           borderColor: activeTeam === index ? team.color : "#e7e5e4",
@@ -726,19 +737,38 @@ export default function TerritoryBattleScene() {
               <div className="rounded-lg border border-stone-200 bg-white p-4 shadow-sm shadow-stone-900/5">
                 <p className="text-xs font-black uppercase tracking-[0.22em] text-stone-500">Điều khiển</p>
                 <div className="mt-3 grid grid-cols-2 gap-2">
-                  <button onClick={awardLetters} disabled={finished} className="rounded-md bg-brand-gold px-3 py-2 text-xs font-black text-stone-950 disabled:opacity-40">
+                  <button
+                    onClick={awardLetters}
+                    disabled={finished || selectedChoice !== null}
+                    className="rounded-md bg-brand-gold px-3 py-2 text-xs font-black text-stone-950 transition hover:bg-yellow-300 disabled:cursor-not-allowed disabled:bg-stone-100 disabled:text-stone-400"
+                  >
                     Đúng
                   </button>
-                  <button onClick={missQuestion} disabled={finished} className="rounded-md border border-stone-200 bg-stone-50 px-3 py-2 text-xs font-bold text-stone-700 disabled:opacity-40">
+                  <button
+                    onClick={missQuestion}
+                    disabled={finished || selectedChoice !== null}
+                    className="rounded-md border border-stone-300 bg-white px-3 py-2 text-xs font-bold text-stone-700 transition hover:border-stone-400 disabled:cursor-not-allowed disabled:border-stone-200 disabled:bg-stone-50 disabled:text-stone-300"
+                  >
                     Sai
                   </button>
-                  <button onClick={undo} disabled={!history.length} className="rounded-md border border-stone-200 bg-stone-50 px-3 py-2 text-xs font-bold text-stone-700 disabled:opacity-35">
+                  <button
+                    onClick={undo}
+                    disabled={!history.length || selectedChoice !== null}
+                    className="rounded-md border border-stone-300 bg-white px-3 py-2 text-xs font-bold text-stone-700 transition hover:border-stone-400 disabled:cursor-not-allowed disabled:border-stone-200 disabled:bg-stone-50 disabled:text-stone-300"
+                  >
                     Hoàn tác
                   </button>
-                  <button onClick={finishGame} disabled={finished} className="rounded-md border border-brand-gold/60 bg-brand-gold/10 px-3 py-2 text-xs font-bold text-brand-gold disabled:opacity-40">
+                  <button
+                    onClick={finishGame}
+                    disabled={finished || selectedChoice !== null}
+                    className="rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-xs font-bold text-amber-800 transition hover:border-amber-400 disabled:cursor-not-allowed disabled:border-stone-200 disabled:bg-stone-50 disabled:text-stone-300"
+                  >
                     Chốt điểm
                   </button>
-                  <button onClick={resetGame} className="col-span-2 rounded-md border border-red-300/40 bg-red-500/15 px-3 py-2 text-xs font-bold text-red-100">
+                  <button
+                    onClick={resetGame}
+                    className="col-span-2 rounded-md border border-red-300 bg-red-50 px-3 py-2 text-xs font-bold text-red-700 transition hover:border-red-400 hover:bg-red-100"
+                  >
                     Chơi lại
                   </button>
                 </div>
@@ -791,15 +821,21 @@ export default function TerritoryBattleScene() {
                 <p className="mt-5 whitespace-pre-line text-2xl font-black leading-snug">{visibleQuestion.text}</p>
                 <div className="mt-5 grid gap-3 sm:grid-cols-2">
                   {visibleQuestion.options.map((option) => {
+                    const revealed = selectedChoice !== null;
                     const isPicked = selectedChoice === option.key;
+                    const isCorrectOption = revealed && option.key === correctChoice(currentQuestion);
                     return (
                       <button
                         key={option.key}
                         onClick={() => chooseOption(option.key)}
-                        disabled={finished}
+                        disabled={finished || revealed}
                         className={`grid grid-cols-[42px_1fr] items-center gap-3 rounded-lg border p-3 text-left transition ${
-                          isPicked ? "border-brand-gold bg-yellow-50" : "border-stone-200 bg-stone-50 hover:border-brand-gold"
-                        } disabled:cursor-not-allowed disabled:opacity-60`}
+                          isCorrectOption
+                            ? "border-green-500 bg-green-100 text-green-900"
+                            : revealed && isPicked
+                              ? "border-red-400 bg-red-50 text-red-800"
+                              : "border-stone-200 bg-stone-50 hover:border-brand-gold"
+                        } disabled:cursor-not-allowed`}
                       >
                         <span className="flex h-10 w-10 items-center justify-center rounded-md bg-stone-950 text-base font-black text-white">
                           {option.key}
@@ -809,6 +845,33 @@ export default function TerritoryBattleScene() {
                     );
                   })}
                 </div>
+                <AnimatePresence>
+                  {selectedChoice !== null && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -8, scale: 0.96 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.25, ease: "easeOut" }}
+                      role="status"
+                      className={`mt-4 flex flex-wrap items-center justify-between gap-3 rounded-md px-3 py-2 text-sm font-black ${
+                        pendingCorrect ? "bg-green-500 text-white" : "bg-red-500 text-white"
+                      }`}
+                    >
+                      <span className="flex items-center gap-2">
+                        <span aria-hidden>{pendingCorrect ? "✓" : "✗"}</span>
+                        {pendingCorrect
+                          ? `Chính xác! +${currentQuestion.reward} chữ cho ${teamName(currentTeam)}.`
+                          : `Chưa đúng — đáp án đúng: ${correctChoice(currentQuestion)}.`}
+                      </span>
+                      <button
+                        onClick={advanceAfterChoice}
+                        className="rounded-md bg-stone-950 px-3 py-1.5 text-xs font-black uppercase tracking-wide text-white transition hover:bg-stone-800"
+                      >
+                        Câu tiếp theo →
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
                 <details className="mt-4 rounded-lg border border-stone-200 bg-stone-50 p-3">
                   <summary className="cursor-pointer text-xs font-black uppercase tracking-wide text-stone-500">
                     Đáp án cho admin

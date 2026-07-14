@@ -7,7 +7,7 @@ import StructureScene from "@/app/components/scenes/StructureScene";
 import ChangeScene from "@/app/components/scenes/ChangeScene";
 import AllianceScene from "@/app/components/scenes/AllianceScene";
 import VietnamScene from "@/app/components/scenes/VietnamScene";
-import TerritoryBattleScene from "@/app/components/scenes/TerritoryBattleScene";
+import GamePromoScene from "@/app/components/scenes/GamePromoScene";
 import QuizScene from "@/app/components/scenes/QuizScene";
 import AiUsageScene from "@/app/components/scenes/AiUsageScene";
 
@@ -29,7 +29,7 @@ export default function Home() {
 
       <AllianceScene />
       <VietnamScene />
-      <TerritoryBattleScene />
+      <GamePromoScene />
       <QuizScene />
       <AiUsageScene />
 
